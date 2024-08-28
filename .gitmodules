@@ -1,0 +1,3 @@
+[submodule "s63lib"]
+	path = s63lib
+	url = https://github.com/pandazz77/s63lib
