@@ -3,3 +3,4 @@ build
 *.pyi
 s63py.egg-info
 *__pycache__
+tests/secrets

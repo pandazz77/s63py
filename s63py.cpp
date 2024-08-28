@@ -71,7 +71,7 @@ PYBIND11_MODULE(s63py, m){
     )
     .def("getUserpermit",&S63WR::S63Client_WRAPPED::getUserpermit)
     .def("open",&S63WR::S63Client_WRAPPED::open,
-        py::arg("permitFile")
+        py::arg("s63cellpath")
     )
     .def("decryptAndUnzipCell",py::overload_cast<const std::string&, const std::string&>(&S63WR::S63Client_WRAPPED::decryptAndUnzipCell),
         py::arg("in_path"),
