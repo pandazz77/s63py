@@ -50,7 +50,10 @@ class CMakeBuild(build_ext):
         # Set Python_EXECUTABLE instead if you use PYBIND11_FINDPYTHON
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
+        import pybind11
+
         cmake_args = [
+            f"-DCMAKE_PREFIX_PATH={pybind11.get_cmake_dir()}",
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
@@ -180,6 +183,7 @@ setup(
     python_requires=">=3.7",
     test_suite="tests",
     setup_requires=[
+        "pybind11",
         "pybind11-stubgen"
     ]
 )
