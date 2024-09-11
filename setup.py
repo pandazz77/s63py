@@ -4,8 +4,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-#from pybind11_stubgen import run
-
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 from setuptools.command.install import install
@@ -129,12 +127,37 @@ class CMakeBuild(build_ext):
         subprocess.run(
             ["cmake", "--build", ".", *build_args], cwd=self.build_dir, check=True
         )
+        self.libdir = self.build_dir / self.extdir
+
+        self.copydlls()
         self.gen_stubs()
 
+    def copydlls(self):
+        if self.compiler.compiler_type != "msvc": return
+
+        import fnmatch, os, shutil
+
+
+        for root, dirnames, filenames in os.walk(self.build_dir):
+            for filename in fnmatch.filter(filenames, '*.dll'):
+                shutil.copyfile(
+                    os.path.join(root, filename),
+                    os.path.join(self.libdir,filename)
+                )
+        
     def gen_stubs(self):
-        libdir = self.build_dir / self.extdir
-        print(f"Generating stubs {libdir}")
-        subprocess.check_call([sys.executable,"-m",'pybind11_stubgen',self.ext.name, '-o', str(self.ext.stubs_dir.resolve())],cwd=str(libdir.resolve()))
+        import pybind11_stubgen as pbs
+
+
+        sys.argv = [
+            "<dummy>",
+            "-o", str(self.ext.stubs_dir.resolve()),
+            self.ext.name
+        ]
+
+        sys.path.append(str(self.libdir.resolve()))
+
+        pbs.main()
 
 cmake_extension = CMakeExtension(name="s63py")
 
@@ -147,7 +170,6 @@ setup(
     author_email="kalin1538inn@gmail.com",
     description="python bindings of s63lib",
     long_description="",
-    requires=["pybind11_stubgen"],
     ext_modules=[cmake_extension],
     data_files=[("s63py",[f"{cmake_extension.stubs_dir}{os.path.sep}s63py.pyi"])],
     cmdclass={
@@ -157,7 +179,7 @@ setup(
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.7",
     test_suite="tests",
-    install_requires=[
+    setup_requires=[
         "pybind11-stubgen"
     ]
 )
