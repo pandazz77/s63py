@@ -1,6 +1,7 @@
 #include "s63.h"
 #include "s63client.h"
 #include "s63utils.hpp"
+#include "simple_zip.h"
 
 #include <pybind11/pybind11.h>
 
@@ -149,6 +150,22 @@ namespace S63WR {
                 S63Error error = S63Client::decryptAndUnzipCell(in_path, cellpermit, out_path);
                 if(error == S63_ERR_OK) return;
                 throw S63exception(ERRORS.at(error).c_str());
+            }
+    };
+
+    class Zip: private SimpleZip{
+        public:
+            static const py::bytearray unzip(const py::bytearray& in){
+                std::string result;
+                bool ok = SimpleZip::unzip(std::string(in),result);
+                if(!ok) throw S63exception("cannot unzip");
+                return py::bytearray(result);
+            }
+            static const py::bytearray zip(const std::string& filename, const py::bytearray& in){
+                std::string result;
+                bool ok =SimpleZip::zip(filename,std::string(in),result);
+                if(!ok) throw S63exception("cannot zip");
+                return py::bytearray(result);
             }
     };
 };
