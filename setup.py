@@ -25,10 +25,6 @@ class CMakeExtension(Extension):
         super().__init__(name, sources=[])
         self.sourcedir = os.fspath(Path(sourcedir).resolve())
 
-        self.stubs_dir = Path(sourcedir) #/ "stubs"
-        if not self.stubs_dir.exists():
-            self.stubs_dir.mkdir(parents=True)
-
 class CMakeBuild(build_ext):
     def build_extension(self, ext: CMakeExtension) -> None:
         self.ext = ext
@@ -133,7 +129,6 @@ class CMakeBuild(build_ext):
         self.libdir = self.build_dir / self.extdir
 
         self.copydlls()
-        self.gen_stubs()
 
     def copydlls(self):
         if self.compiler.compiler_type != "msvc": return
@@ -147,22 +142,8 @@ class CMakeBuild(build_ext):
                     os.path.join(root, filename),
                     os.path.join(self.libdir,filename)
                 )
-        
-    def gen_stubs(self):
-        import pybind11_stubgen as pbs
 
-
-        sys.argv = [
-            "<dummy>",
-            "-o", str(self.ext.stubs_dir.resolve()),
-            self.ext.name
-        ]
-
-        sys.path.append(str(self.libdir.resolve()))
-
-        pbs.main()
-
-cmake_extension = CMakeExtension(name="s63py")
+cmake_extension = CMakeExtension(name="s63py.s63py")
 
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
@@ -174,16 +155,15 @@ setup(
     description="python bindings of s63lib",
     long_description="",
     ext_modules=[cmake_extension],
-    data_files=[("s63py",[f"{cmake_extension.stubs_dir}{os.path.sep}s63py.pyi"])],
     cmdclass={
         "build_ext": CMakeBuild,
     },
+    packages=["s63py"],
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.7",
     test_suite="tests",
     setup_requires=[
-        "pybind11",
-        "pybind11-stubgen"
+        "pybind11"
     ]
 )
