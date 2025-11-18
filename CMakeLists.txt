@@ -16,3 +16,8 @@ set(SRC_WRAPPERS
 
 pybind11_add_module(${PROJECT_NAME} ${SRC_WRAPPERS})
 target_link_libraries(${PROJECT_NAME} PRIVATE s63lib pybind11::module pybind11::lto)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    INSTALL_RPATH "$ORIGIN"
+    BUILD_WITH_INSTALL_RPATH TRUE
+)
