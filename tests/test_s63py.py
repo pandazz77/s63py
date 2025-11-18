@@ -41,5 +41,13 @@ class TestS63(unittest.TestCase):
             "Extract Cell Keys from Cell Permit"
         )
 
+    def test_zip(self):
+        test_unzipped_data = bytearray("This is a test unzipped data!!!!! 50 bytes length","utf-8")
+
+        zipped_data = s63py.zip.zip("test.txt",test_unzipped_data)
+        unzipped_data = s63py.zip.unzip(zipped_data)
+
+        self.assertEqual(unzipped_data,test_unzipped_data)
+
 if __name__ == "__main__":
     unittest.main()

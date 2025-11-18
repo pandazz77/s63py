@@ -82,4 +82,14 @@ PYBIND11_MODULE(s63py, m){
         py::arg("cellPermit"),
         py::arg("out_path")
     );
+
+
+    py::class_<S63WR::Zip>(m,"zip")
+    .def_static("unzip",&S63WR::Zip::unzip,
+        py::arg("data")
+    )
+    .def_static("zip",&S63WR::Zip::zip,
+        py::arg("filename"),
+        py::arg("data")
+    );
 };

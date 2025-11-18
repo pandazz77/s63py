@@ -5,3 +5,4 @@ s63py.egg-info
 .eggs
 *__pycache__
 tests/secrets
+.cache

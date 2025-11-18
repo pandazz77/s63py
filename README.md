@@ -39,3 +39,24 @@ s57_decrypted = s63client.open("/path/to/63cell/NO4D06/NO4D06.000")
 with open("path/to/s57cell/NO4D06/NO4D06.000","wb") as f:
     f.write(s57_decrypted)
 ```
+
+Encryption example:
+```py
+HW_ID = bytearray.fromhex("3132333438")
+CK1 = bytearray.fromhex("C1CB518E9C")
+CK2 = bytearray.fromhex("421571CC66")
+EXPDAY = "20251231"
+
+cellpermit = s63py.createCellPermit(HW_ID,CK1,CK2,"US5OH10M",EXPDAY)
+with open("s63lib/tests/dataset/s57/in/US5OH10M.000","rb") as f:
+    s57cell = f.read()
+
+s57cell_zip = s63py.zip.zip("US5OH10M.000",bytearray(s57cell))
+s63cell = s63py.encryptCell(s57cell_zip,CK1)
+
+with open("US5OH10M.000","wb") as f:
+    f.write(s63cell)
+
+with open("PERMIT.TXT","w") as f:
+    f.write(cellpermit)
+```
