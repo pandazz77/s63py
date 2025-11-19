@@ -5,3 +5,4 @@ s63py.egg-info
 *__pycache__
 tests/secrets
 .cache
+.venv
