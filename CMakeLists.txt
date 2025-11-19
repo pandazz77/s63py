@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 project(s63py LANGUAGES CXX)
 
+set(CMAKE_BUILD_RPATH_USE_ORIGIN TRUE)
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/s63lib)
 
 set(PYBIND11_FINDPYTHON ON)
@@ -16,8 +20,3 @@ set(SRC_WRAPPERS
 
 pybind11_add_module(${PROJECT_NAME} ${SRC_WRAPPERS})
 target_link_libraries(${PROJECT_NAME} PRIVATE s63lib pybind11::module pybind11::lto)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    INSTALL_RPATH "$ORIGIN"
-    BUILD_WITH_INSTALL_RPATH TRUE
-)
