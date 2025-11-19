@@ -149,7 +149,7 @@ cmake_extension = CMakeExtension(name="s63py.s63py")
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="s63py",
-    version="0.2",
+    version="0.3",
     author="pandazz7",
     author_email="kalin1538inn@gmail.com",
     description="python bindings of s63lib",
