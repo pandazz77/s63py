@@ -31,9 +31,13 @@ PYBIND11_MODULE(s63py, m){
         py::arg("cellpermit"),
         py::arg("HW_ID")
     );
-    m.def("decryptCell",&S63WR::decryptCell,
+    m.def("decryptCell",py::overload_cast<const std::string&, const pykey_pair&>(&S63WR::decryptCell),
         py::arg("path"),
         py::arg("keys")
+    );
+    m.def("decryptCell",py::overload_cast<const py::bytearray&, const py::bytearray&>(&S63WR::decryptCell),
+        py::arg("buf"),
+        py::arg("key")
     );
     m.def("encryptCell",&S63WR::encryptCell,
         py::arg("buf"),

@@ -86,6 +86,13 @@ namespace S63WR {
         throw S63exception(ERRORS.at(error).c_str());
     }
 
+    inline py::bytearray decryptCell(const py::bytearray &buffer, const py::bytearray &key){
+        std::string str_buffer(buffer);
+        S63Error error = S63::decryptCell(str_buffer,std::string(key));
+        if(error == S63_ERR_OK) return py::bytearray(str_buffer);
+        throw S63exception(ERRORS.at(error).c_str());
+    }
+
     inline py::bytearray encryptCell(const py::bytearray &buffer, const py::bytearray &key){
         std::string str_buffer(buffer);
         S63::encryptCell(str_buffer,std::string(key));
